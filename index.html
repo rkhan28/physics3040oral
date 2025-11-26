@@ -178,6 +178,16 @@
             .grid-2, .timeline { grid-template-columns: 1fr; flex-direction: column; gap: 2rem; }
             h1 { font-size: 2.5rem; }
         }
+        
+        /* IMAGE STYLING */
+        .comparison-img {
+            width: 100%; max-width: 350px; 
+            border-radius: 50%; 
+            aspect-ratio: 1/1; 
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        .comparison-img:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
@@ -199,12 +209,12 @@
         <div class="planet-hero reveal"></div>
         
         <div class="reveal" style="transition-delay: 0.2s;">
-            <h1 class="text-cyan">TrES-2b<br>the Darkest Known Planet</h1>
+            <h1 class="text-cyan">Why Is TrES-2b<br>the Darkest Known Planet?</h1>
             <h2 style="font-size: 1.5rem; color: var(--text-main); border: none; font-family: var(--font-main); letter-spacing: 4px; margin-bottom: 2rem;">
                 PHYS 3070 — Oral Presentation
             </h2>
             <div style="padding-top: 1rem; border-top: 1px solid var(--border-color); display: inline-block;">
-                <p class="font-mono text-muted" style="font-size: 1rem;">MD Rahmat Ullah Khan | 27th November 2025</p>
+                <p class="font-mono text-muted" style="font-size: 1rem;">YOUR NAME | DATE</p>
             </div>
         </div>
     </section>
@@ -220,6 +230,10 @@
                 <p>
                     At such high heat, reflective clouds cannot form, leaving the atmosphere exposed and unstable. Its size, extreme proximity, and intense irradiation make it very different from Jupiter and ideal for studying harsh exoplanet atmospheres.
                 </p>
+                <p style="border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 1rem; font-size: 1.1rem; color: var(--text-muted);">
+                    <span class="text-cyan font-mono" style="display:block; margin-bottom:5px;">DISCOVERY CONTEXT</span>
+                    Discovered in 2006 by the <b>Trans-Atlantic Exoplanet Survey (TrES)</b> using the transit method, it was later identified as the first target in the Kepler Space Telescope’s field of view (Kepler-1b). This unique positioning allowed for months of continuous, high-precision monitoring, enabling astronomers to detect the incredibly faint signal of its phase curve.
+                </p>
             </div>
             <div class="flex-center reveal" style="flex-direction: column; transition-delay: 0.2s;">
                 <div class="orbit-viz">
@@ -231,6 +245,24 @@
                         ORBIT: 0.03 AU<br>
                         TEMP: >1000°C
                     </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VISUAL COMPARISON (Slide 2.5) -->
+    <section id="visual-comparison" style="background: rgba(10,10,10,0.8);">
+        <div class="container">
+            <h2 class="text-cyan reveal">Visual Comparison</h2>
+            <div class="grid-2 reveal" style="margin-top: 2rem;">
+                <div style="text-align: center;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg" alt="Jupiter with its characteristic bands" class="comparison-img" style="border: 3px solid var(--cyan); box-shadow: 0 0 25px var(--cyan-dim);">
+                    <p class="font-mono text-cyan" style="margin-top: 1rem;">JUPITER<br><span style="font-size: 0.8rem; color: #fff;">Reflective Clouds (~50% Albedo)</span></p>
+                </div>
+                <div style="text-align: center;">
+                    <!-- CSS Planet Hero applied for TrES-2b Visual -->
+                    <div class="planet-hero" style="margin: 0 auto;"></div>
+                    <p class="font-mono text-red" style="margin-top: 1rem;">TrES-2b<br><span style="font-size: 0.8rem; color: #fff;">Light Absorbing (<1% Albedo)</span></p>
                 </div>
             </div>
         </div>
@@ -447,4 +479,3 @@
     </script>
 </body>
 </html>
-
