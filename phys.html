@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHYS 3070: TrES-2b Presentation</title>
+    
+    <!-- Sci-Fi Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --bg-color: #050505;
+            --panel-bg: rgba(20, 25, 35, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --cyan: #00f3ff;
+            --cyan-dim: rgba(0, 243, 255, 0.1);
+            --red: #ff2a2a;
+            --purple: #bc13fe;
+            --amber: #fbbf24;
+            --text-main: #e0e6ed;
+            --text-muted: #94a3b8;
+            --font-main: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- UTILITIES --- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
+        .flex-center { display: flex; justify-content: center; align-items: center; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+        
+        .text-cyan { color: var(--cyan); text-shadow: 0 0 10px var(--cyan-dim); }
+        .text-red { color: var(--red); text-shadow: 0 0 10px rgba(255, 42, 42, 0.3); }
+        .text-purple { color: var(--purple); }
+        .text-amber { color: var(--amber); }
+        .font-mono { font-family: var(--font-mono); }
+        
+        h1, h2, h3 { text-transform: uppercase; letter-spacing: 2px; line-height: 1.1; }
+        h1 { font-size: 3.5rem; margin-bottom: 1rem; }
+        h2 { font-size: 2.2rem; margin-bottom: 1.5rem; font-family: var(--font-mono); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display: inline-block;}
+        h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        p { font-size: 1.25rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 1rem; }
+        ul { list-style: none; }
+        li { margin-bottom: 1rem; position: relative; padding-left: 20px; font-size: 1.2rem; color: var(--text-muted); }
+        li::before { content: '>'; position: absolute; left: 0; color: var(--cyan); font-family: var(--font-mono); }
+
+        .btn {
+            background: transparent; border: 1px solid var(--cyan); color: var(--cyan);
+            padding: 12px 30px; font-family: var(--font-mono); font-size: 1rem;
+            cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 2px;
+        }
+        .btn:hover { background: var(--cyan); color: #000; box-shadow: 0 0 20px var(--cyan); }
+        .btn-red { border-color: var(--red); color: var(--red); }
+        .btn-red:hover { background: var(--red); color: #000; box-shadow: 0 0 20px var(--red); }
+
+        /* --- ANIMATIONS --- */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- HUD --- */
+        .hud-header {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 20px;
+            display: flex; justify-content: space-between; z-index: 100;
+            pointer-events: none; background: linear-gradient(to bottom, #000000ee, transparent);
+        }
+        .progress-bar {
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: linear-gradient(90deg, var(--cyan), var(--purple), var(--red));
+            width: 0%; z-index: 101; transition: width 0.1s;
+        }
+
+        /* --- SECTIONS --- */
+        section {
+            min-height: 100vh; position: relative; display: flex;
+            align-items: center; justify-content: center;
+            padding: 80px 0; border-bottom: 1px solid rgba(255,255,255,0.02);
+        }
+
+        /* HERO */
+        .starfield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(ellipse at bottom, #1b2735 0%, #000 100%); }
+        .planet-hero {
+            width: 280px; height: 280px; background: #080808; border-radius: 50%;
+            box-shadow: inset -20px -20px 60px rgba(20,20,20,0.5), 0 0 50px rgba(0,0,0,0.8);
+            position: relative; margin-bottom: 2rem; animation: float 6s ease-in-out infinite;
+        }
+        .planet-hero::after {
+            content: ''; position: absolute; inset: -1px; border-radius: 50%;
+            box-shadow: inset 2px 2px 15px rgba(200, 50, 50, 0.2); z-index: 2;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        /* ORBIT VIZ */
+        .orbit-viz { width: 220px; height: 220px; border: 1px solid var(--text-muted); border-radius: 50%; position: relative; margin: 0 auto; }
+        .star-center {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 40px; height: 40px; background: #fbbf24; border-radius: 50%; box-shadow: 0 0 30px #fbbf24;
+        }
+        .planet-orbit {
+            position: absolute; top: 50%; left: 50%; width: 220px; height: 220px;
+            transform: translate(-50%, -50%); animation: rotate 5s linear infinite;
+        }
+        .planet-dot {
+            width: 14px; height: 14px; background: #000; border: 1px solid var(--red);
+            border-radius: 50%; position: absolute; top: -7px; left: 50%; transform: translateX(-50%);
+        }
+        @keyframes rotate { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        /* METHODS GRAPH */
+        .timeline { display: flex; justify-content: space-between; margin-top: 2rem; gap: 1rem; }
+        .timeline-step { flex: 1; background: rgba(255,255,255,0.03); padding: 15px; border-top: 2px solid var(--purple); font-size: 0.9rem;}
+        .graph-container {
+            height: 180px; display: flex; align-items: flex-end; gap: 3px;
+            margin-top: 2rem; border-bottom: 1px solid var(--text-muted); padding-bottom: 5px;
+            position: relative;
+        }
+        .bar-slice { flex: 1; background: var(--cyan-dim); transition: height 0.5s; }
+        
+        /* RESULTS (CHART) */
+        .chart-row { margin-bottom: 1.5rem; }
+        .chart-label { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-family: var(--font-mono); font-size: 1rem; }
+        .chart-track { width: 100%; height: 30px; background: #111; border-radius: 2px; overflow: hidden; position: relative; }
+        .chart-bar { height: 100%; width: 0; transition: width 1.5s ease-out; display: flex; align-items: center; padding-left: 10px; font-size: 0.9rem; color: #000; font-weight: bold; white-space: nowrap;}
+        
+        /* CHEMISTRY */
+        .molecule-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; margin-top: 2rem;}
+        .molecule-card {
+            border: 1px solid var(--border-color); padding: 2rem; text-align: center;
+            transition: 0.3s; cursor: default; background: rgba(0,0,0,0.4);
+        }
+        .molecule-card:hover { border-color: var(--cyan); transform: translateY(-5px); }
+        .element-symbol {
+            font-size: 2.5rem; font-weight: 700; color: var(--cyan);
+            border: 2px solid var(--cyan); width: 70px; height: 70px;
+            line-height: 66px; border-radius: 50%; margin: 0 auto 1rem;
+        }
+
+        /* PARADOX (TOGGLE) */
+        .planet-interactive-container { width: 320px; height: 320px; margin: 2rem auto; position: relative; }
+        .planet-interactive {
+            width: 100%; height: 100%; border-radius: 50%; background: #050505;
+            transition: all 0.8s ease;
+            box-shadow: inset -15px -15px 50px rgba(50,50,50,0.3); border: 1px solid #111;
+        }
+        .planet-interactive.thermal-mode {
+            background: radial-gradient(circle at 30% 30%, #4a0404, #000);
+            box-shadow: inset -10px -10px 80px rgba(255, 42, 42, 0.9), 0 0 40px rgba(255, 42, 42, 0.5); border-color: #500;
+        }
+        .toggle-controls { display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; }
+
+        /* TECH PANEL (Slide 7) */
+        .tech-panel {
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            background: radial-gradient(circle at top right, rgba(251, 191, 36, 0.05), transparent);
+            padding: 3rem; position: relative; overflow: hidden;
+        }
+        .scan-line {
+            position: absolute; top: 0; left: 0; width: 2px; height: 100%;
+            background: rgba(251, 191, 36, 0.8); box-shadow: 0 0 15px orange;
+            animation: scan 4s linear infinite;
+        }
+        @keyframes scan { 0% { left: 0%; } 100% { left: 100%; } }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .grid-2, .timeline { grid-template-columns: 1fr; flex-direction: column; gap: 2rem; }
+            h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HUD -->
+    <div class="hud-header">
+        <div class="font-mono text-cyan" style="font-size: 0.8rem; display: flex; align-items: center; gap: 10px;">
+            <div style="width: 8px; height: 8px; background: #0f0; border-radius: 50%; box-shadow: 0 0 8px #0f0; animation: pulse 2s infinite;"></div>
+            PHYS 3070 // EXOPLANET ANALYSIS
+        </div>
+        <div class="font-mono text-muted" style="font-size: 0.8rem;">SYSTEM: TrES-2b</div>
+    </div>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- SLIDE 1: TITLE -->
+    <section id="slide1" class="flex-center" style="flex-direction: column; text-align: center;">
+        <div class="starfield" id="starfield"></div>
+        
+        <div class="planet-hero reveal"></div>
+        
+        <div class="reveal" style="transition-delay: 0.2s;">
+            <h1 class="text-cyan">Why Is TrES-2b<br>the Darkest Known Planet?</h1>
+            <h2 style="font-size: 1.5rem; color: var(--text-main); border: none; font-family: var(--font-main); letter-spacing: 4px; margin-bottom: 2rem;">
+                PHYS 3070 — Oral Presentation
+            </h2>
+            <div style="padding-top: 1rem; border-top: 1px solid var(--border-color); display: inline-block;">
+                <p class="font-mono text-muted" style="font-size: 1rem;">MD Rahmat Ullah Khan | 27th November 2025</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 2: WHAT IS TrES-2b? -->
+    <section id="slide2">
+        <div class="container grid-2">
+            <div class="reveal">
+                <h2 class="text-cyan">What Is TrES-2b?</h2>
+                <p>
+                    TrES-2b is an <b>ultra–hot Jupiter</b> about 750 light-years away in Draco. It orbits extremely close to its star, reaching temperatures above 1,000°C. 
+                </p>
+                <p>
+                    At such high heat, reflective clouds cannot form, leaving the atmosphere exposed and unstable. Its size, extreme proximity, and intense irradiation make it very different from Jupiter and ideal for studying harsh exoplanet atmospheres.
+                </p>
+            </div>
+            <div class="flex-center reveal" style="flex-direction: column; transition-delay: 0.2s;">
+                <div class="orbit-viz">
+                    <div class="star-center"></div>
+                    <div class="planet-orbit"><div class="planet-dot"></div></div>
+                </div>
+                <div style="margin-top: 2rem; text-align: center;">
+                    <p class="font-mono text-red" style="font-size: 0.9rem;">
+                        ORBIT: 0.03 AU<br>
+                        TEMP: >1000°C
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 3: WHY SURPRISING -->
+    <section id="slide3" style="background: radial-gradient(circle at center, #1a0b2e 0%, #000000 70%);">
+        <div class="container grid-2">
+            <div class="reveal">
+                <h2 class="text-purple">Why Its Darkness Is Surprising</h2>
+                <p style="color: #fff;">
+                    TrES-2b reflects <b>less than 1%</b> of the light that hits it — darker than coal or soot.
+                </p>
+                <p>
+                    Gas giants usually look bright because of reflective clouds (like Jupiter), so finding a Jupiter-sized planet that absorbs nearly all visible light is unexpected. This makes TrES-2b the darkest exoplanet ever measured.
+                </p>
+            </div>
+            <div class="reveal">
+                <p class="font-mono text-cyan" style="font-size: 0.9rem; margin-bottom: 1rem;">// GEOMETRIC ALBEDO COMPARISON</p>
+                <!-- Jupiter -->
+                <div class="chart-row">
+                    <div class="chart-label"><span>Jupiter</span> <span>~50%</span></div>
+                    <div class="chart-track"><div class="chart-bar" style="background: #d8b48d;" data-width="50%">50%</div></div>
+                </div>
+                <!-- Earth -->
+                <div class="chart-row">
+                    <div class="chart-label"><span>Earth</span> <span>30%</span></div>
+                    <div class="chart-track"><div class="chart-bar" style="background: #3b82f6;" data-width="30%">30%</div></div>
+                </div>
+                <!-- Coal -->
+                <div class="chart-row">
+                    <div class="chart-label"><span>Coal</span> <span>~4%</span></div>
+                    <div class="chart-track"><div class="chart-bar" style="background: #444; color: #fff;" data-width="4%">4%</div></div>
+                </div>
+                <!-- TrES-2b -->
+                <div class="chart-row">
+                    <div class="chart-label"><span class="text-red">TrES-2b</span> <span>&lt;1%</span></div>
+                    <div class="chart-track" style="border: 1px solid rgba(255, 42, 42, 0.3);">
+                        <div class="chart-bar" style="background: var(--red); box-shadow: 0 0 15px var(--red); color: #000;" data-width="1%">1%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 4: HOW WE MEASURE -->
+    <section id="slide4">
+        <div class="container">
+            <h2 class="text-purple reveal">How We Measure Its Darkness</h2>
+            <div class="grid-2 reveal">
+                <div>
+                    <ul>
+                        <li>Observed by the <b>Kepler Space Telescope</b></li>
+                        <li><b>Phase curve analysis</b> tracks brightness over the orbit</li>
+                        <li>Compare light from the system when the dayside faces us</li>
+                        <li>Result: almost no visible reflection</li>
+                    </ul>
+                    <p class="text-cyan font-mono" style="margin-top: 2rem; border-left: 3px solid var(--cyan); padding-left: 1rem;">
+                        → Confirms its extremely low albedo (<1%)
+                    </p>
+                </div>
+                <div>
+                    <div class="graph-container" id="graphContainer"></div>
+                    <div class="timeline">
+                        <div class="timeline-step">TRANSIT</div>
+                        <div class="timeline-step">PHASE CURVE</div>
+                        <div class="timeline-step">ECLIPSE</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 5: CHEMISTRY -->
+    <section id="slide5">
+        <div class="container">
+            <h2 class="text-cyan reveal">Why It’s So Dark</h2>
+            <p class="reveal" style="max-width: 800px;">
+                The atmosphere contains strong light-absorbing molecules like sodium, potassium, and titanium oxide. High temperatures destroy bright clouds and leave the atmosphere clear but highly absorbing. With no reflective particles and intense heating, the planet absorbs nearly all incoming visible light.
+            </p>
+
+            <div class="molecule-grid reveal">
+                <div class="molecule-card">
+                    <div class="element-symbol">Na</div>
+                    <h3>Sodium</h3>
+                    <p style="font-size: 0.9rem;">Strong absorption in visible spectrum.</p>
+                </div>
+                <div class="molecule-card">
+                    <div class="element-symbol">K</div>
+                    <h3>Potassium</h3>
+                    <p style="font-size: 0.9rem;">Works with Sodium to trap light.</p>
+                </div>
+                <div class="molecule-card">
+                    <div class="element-symbol" style="font-size: 2rem; line-height: 66px;">TiO</div>
+                    <h3>Titanium Oxide</h3>
+                    <p style="font-size: 0.9rem;">Potent absorber at high temps.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 6: THERMAL GLOW -->
+    <section id="slide6" style="background: radial-gradient(circle at center, #110000 0%, #000 100%);">
+        <div class="container" style="text-align: center;">
+            <h2 class="text-red reveal">Thermal Glow</h2>
+            <p class="reveal" style="max-width: 700px; margin: 0 auto;">
+                Even though it’s dark in visible light, TrES-2b <b>glows faintly in infrared</b> because of its heat. Kepler detects a small increase in brightness when the hot side faces Earth. This glow comes from thermal emission, not reflected starlight.
+            </p>
+
+            <div class="planet-interactive-container reveal">
+                <div id="interactivePlanet" class="planet-interactive"></div>
+            </div>
+
+            <div class="toggle-controls reveal">
+                <button class="btn" onclick="setMode('visible')">Visible (Dark)</button>
+                <button class="btn btn-red" onclick="setMode('thermal')">Infrared (Glow)</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 7: WHAT THIS TEACHES US -->
+    <section id="slide7">
+        <div class="container reveal">
+            <div class="tech-panel">
+                <div class="scan-line"></div>
+                <h2 class="text-amber" style="border-bottom: none;">What This Teaches Us</h2>
+                <div class="grid-2" style="align-items: start;">
+                    <ul>
+                        <li>Shows <b>extreme diversity</b> among gas giants</li>
+                        <li>Some atmospheres can be <b>cloud-free</b> and highly absorbing</li>
+                        <li>Chemistry and temperature can suppress reflectivity</li>
+                    </ul>
+                    <ul>
+                        <li>Helps refine models for <b>ultra-hot exoplanets</b></li>
+                        <li>Expands our understanding of <b>atmospheric physics</b></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 8: Q&A -->
+    <section id="slide8" style="background: #000; text-align: center;">
+        <div class="container reveal">
+            <h1 style="font-size: 4rem; color: #fff;">Thank You!</h1>
+            <h2 class="text-cyan" style="border: none;">Questions?</h2>
+        </div>
+    </section>
+
+    <script>
+        // 1. STARFIELD
+        const starfield = document.getElementById('starfield');
+        for(let i=0; i<80; i++){
+            const star = document.createElement('div');
+            star.style.position = 'absolute';
+            star.style.background = 'white';
+            const size = Math.random() * 2 + 1;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.borderRadius = '50%';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.opacity = Math.random();
+            starfield.appendChild(star);
+        }
+
+        // 2. GRAPH GENERATION (Slide 4)
+        const graphContainer = document.getElementById('graphContainer');
+        for(let i=0; i<40; i++){
+            const bar = document.createElement('div');
+            bar.classList.add('bar-slice');
+            // Simulate light curve with dip
+            let height = 60; 
+            if(i > 15 && i < 25) height = 55; // Dip
+            height += (Math.random() * 5); // Noise
+            bar.style.height = height + '%';
+            graphContainer.appendChild(bar);
+        }
+
+        // 3. INTERACTIVE TOGGLE
+        function setMode(mode) {
+            const planet = document.getElementById('interactivePlanet');
+            if(mode === 'thermal') {
+                planet.classList.add('thermal-mode');
+            } else {
+                planet.classList.remove('thermal-mode');
+            }
+        }
+
+        // 4. SCROLL PROGRESS
+        window.onscroll = function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("progressBar").style.width = scrolled + "%";
+        };
+
+        // 5. ANIMATIONS
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    if(entry.target.querySelector('.chart-bar')) {
+                        const bars = entry.target.querySelectorAll('.chart-bar');
+                        bars.forEach(bar => {
+                            bar.style.width = bar.getAttribute('data-width');
+                        });
+                    }
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
+
